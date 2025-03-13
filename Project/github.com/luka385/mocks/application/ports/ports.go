@@ -8,6 +8,6 @@ type UseCasePort interface {
 }
 
 type RepositoryPort interface {
-	GetById(string) (*domain.User, error)
-	Create(*domain.User) error
+	GetUserByID(string) (*domain.User, error)
+	CreateUser(*domain.User) error
 }

@@ -1,34 +1,30 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	"time"
+	"primer-api/application/usecase"
+	dbs "primer-api/infra/dbs/mongodb"
+	"primer-api/infra/http"
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func main() {
-	// Crear un contexto con timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
-	// Configurar las opciones de cliente de MongoDB (como URI)
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017") // Reemplaza con tu URI
+	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
-	// Conectar a MongoDB pasando el contexto y las opciones de cliente
-	client, err := mongo.Connect(ctx, clientOptions)
+	client, err := mongo.Connect(clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Verificar si la conexión fue exitosa
-	err = client.Ping(ctx, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := client.Database("userdb")
 
-	fmt.Println("Conexión exitosa a MongoDB")
+	repo := dbs.NewUserRepository(db)
+	usecase := usecase.NewUseCase(repo)
+	r := http.SetupsServer(usecase)
+
+	r.Run(":8080")
+
 }

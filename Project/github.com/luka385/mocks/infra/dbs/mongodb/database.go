@@ -16,26 +16,20 @@ func NewUserRepository(db *mongo.Database) *UserRepository {
 	return &UserRepository{collection: db.Collection("users")}
 }
 
-func (r *UserRepository) GetById(ctx context.Context, id string) (*domain.User, error) {
+func (m *UserRepository) GetUserByID(id string) (*domain.User, error) {
 
 	filter := bson.M{"id": id}
-
-	user := &domain.User{}
-
-	err := r.collection.FindOne(ctx, filter).Decode(user)
+	var user domain.User
+	err := m.collection.FindOne(context.Background(), filter).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
-
-	return user, nil
+	return &user, nil
 }
-
-func (r *UserRepository) Create(ctx context.Context, user *domain.User) error {
-
-	_, err := r.collection.InsertOne(ctx, user)
+func (r *UserRepository) CreateUser(user *domain.User) error {
+	_, err := r.collection.InsertOne(context.Background(), user)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }

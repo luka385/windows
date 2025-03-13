@@ -6,17 +6,17 @@ import (
 )
 
 type Usecase struct {
-	repo *ports.RepositoryPort
+	repo ports.RepositoryPort
 }
 
-func NewUseCase(repo *ports.RepositoryPort) Usecase {
-	return Usecase{repo: repo}
+func NewUseCase(repo ports.RepositoryPort) *Usecase {
+	return &Usecase{repo: repo}
 }
 
 func (u *Usecase) GetUserByID(id string) (*domain.User, error) {
-	return u.GetUserByID(id)
+	return u.repo.GetUserByID(id)
 }
 
 func (u *Usecase) CreateUser(user *domain.User) error {
-	return u.CreateUser(user)
+	return u.repo.CreateUser(user)
 }
