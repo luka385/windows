@@ -208,8 +208,8 @@ func TestTaskUsecase(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			tc.setup()           //configuramos el comportamiento de los mocks
-			err := tc.testFunc() //ejecutamos la prueba
+			tc.setup()
+			err := tc.testFunc()
 			if tc.wantErr {
 				assert.Error(t, err)
 			} else {
